@@ -1,0 +1,30 @@
+#lang racket
+(define mem '())
+
+(define (query l r mem ans)
+  (if (null? mem) ans
+        (let* ((p (car mem))
+               (ll (car p))
+               (rr (cadr p))
+               (v (caddr p))
+               (min-r (min r rr))
+               (max-l (max l ll))
+               (dist (+ 1 (- min-r max-l))))
+          (if (<= dist 0) (query l r (cdr mem) ans)
+              (query l r (cdr mem) (+ ans (* dist v)))))))
+
+(define (main)
+  (let ((op (read)))
+    (cond ((eq? op eof) (void))
+          ((= op 0) (let ((l (read))
+                          (r (read)))
+                      (begin (displayln (query l r mem 0))
+                             (main))))
+          ((= op 1) (let ((l (read))
+                          (r (read))
+                          (m (read)))
+                      (begin (set! mem (cons (list l r m) mem))
+                             (main)))))))
+
+(define m (read))
+(main)

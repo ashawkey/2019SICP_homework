@@ -1,0 +1,16 @@
+; http://lisp.test.openjudge.org/2019rhw1/4/
+#lang racket
+(define (fast-exp x n)
+  (define (iter x n res)
+    (cond ((= n 0) res)
+          ((even? n) (iter (* x x) (/ n 2) res))
+          (else (iter x (- n 1) (* res x))))
+    )
+  (iter x n 1))
+(define (loop)
+  (let ((x (read))
+        (n (read)))
+    (if (eq? x eof)
+        (void)
+        (begin (display (fast-exp x n)) (newline) (loop)))))
+(loop)
