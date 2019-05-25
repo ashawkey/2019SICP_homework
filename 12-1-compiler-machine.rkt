@@ -467,12 +467,9 @@
 		(list 'get-global-environment get-global-environment)
 		;(list 'announce-output announce-output)
 		(list 'user-print user-print)
-                (list 'eof? eof?)
-                (list 'make-compiled-procedure make-compiled-procedure)
-                (list 'compiled-procedure-entry compiled-procedure-entry)
-                (list 'compiled-procedure-env compiled-procedure-env)
-                (list 'compiled-procedure? compiled-procedure?)
-  ))
+                (list 'eof? eof?) ;add by guo wei
+                )
+  )
 
 
 
@@ -533,9 +530,6 @@
 
 
 (define (assemble controller-text machine)
-  (displayln "***")
-  (displayln controller-text)
-  (displayln "***")
   (extract-labels controller-text
     (lambda (insts labels)
       (update-insts! insts labels machine) 
@@ -718,6 +712,8 @@
 (define (goto-dest goto-instruction)
   (cadr goto-instruction))
 
+
+
 (define (make-save inst machine stack pc) 
   (let ((reg (get-register machine
                            (stack-inst-reg-name inst))))
@@ -787,6 +783,9 @@
     (lambda ()  
          (apply op (map (lambda (p) (p)) aprocs)))))
 
+
+
+
 (define (operation-exp? exp) 
   (and (pair? exp) (tagged-list? (car exp) 'op)))
 (define (operation-exp-op operation-exp)
@@ -800,7 +799,6 @@
     (if val
         (cadr val)
         (error "Unknown operation -- ASSEMBLE" symbol))))
-
 (define (make-new-machine) 
   (let ((pc (make-register 'pc)) 
         (flag (make-register 'flag)) 
@@ -854,6 +852,8 @@
               (else (error "Unknown request -- MACHINE" message))))
       dispatch)))
 
+
+
 (define (make-machine register-names ops controller-text);
   (let ((machine (make-new-machine)))
     (for-each (lambda (register-name)
@@ -867,7 +867,17 @@
 (define (start machine)
   (machine 'start))
 
-;;; your code starts here
+;;; your codes start here
+
+(set! eceval-operations
+      (append eceval-operations
+        (list     
+          (list 'make-compiled-procedure make-compiled-procedure)
+          (list 'compiled-procedure-entry compiled-procedure-entry)
+          (list 'compiled-procedure-env compiled-procedure-env)
+          (list 'compiled-procedure? compiled-procedure?)
+          (list 'list list)
+          (list 'cons cons))))
 
 ; compile main function
 ; linkage = 'next, 'return, 'label
@@ -1365,7 +1375,7 @@ program-end ;addfor scheme-machine by guo wei
         
 (define all-regs '(exp env val proc argl continue unev c d))
 
-;;; your code ends here
+;;; your codes end here
 
 (define scheme-machine
   (make-machine
@@ -1376,11 +1386,12 @@ program-end ;addfor scheme-machine by guo wei
 
 (define (compile-and-go expression)
   (let ((instructions
-         (assemble (statements (compile expression 'val 'return)) scheme-machine))) ;eceval是个scheme机器
+         (assemble (statements  ;assemble由文本形式的指令列表生成scheme机器的指令列表(带可执行过程的指令的列表,该可执行过程是scheme可执行过程)
+                    (compile expression 'val 'return))
+                   scheme-machine))) ;eceval是个scheme机器
     (set-register-contents! scheme-machine 'val instructions)
     (set-register-contents! scheme-machine 'flag true)
     (start scheme-machine)))
-
 ;val放着编译出来的代码的起始地址
 ;return保证编译出来的代码最后是 (goto (reg continue))
 (compile-and-go (read))
