@@ -1,6 +1,6 @@
 # PKU SICP Homework 2019
 
-This is a repository for homework of the 2019 autumn SICP course (Functional Programming) at PKU.
+This is a repository for homework of the 2019 spring SICP course (Functional Programming) at PKU.
 
 Save SICP!
 
