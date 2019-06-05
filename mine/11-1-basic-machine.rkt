@@ -20,8 +20,7 @@
     (for-each (lambda (register-name) ((machine 'allocate-register) register-name))
               register-names)
     ((machine 'install-operations) ops)
-    ((machine 'install-instruction-sequence)
-     (assemble controller-text machine))
+    ((machine 'install-instruction-sequence) (assemble controller-text machine))
     machine))
 
 (define (make-register name) 
@@ -29,10 +28,8 @@
     ; register is a closure, {get(), set(), contents}
     (define (dispatch message)
       (cond ((eq? message 'get) contents)
-            ((eq? message 'set)
-             (lambda (value) (set! contents value)))
-            (else
-             (error "Unknown request -- REGISTER" message))))
+            ((eq? message 'set) (lambda (value) (set! contents value)))
+            (else (error "Unknown request -- REGISTER" message))))
     dispatch))
 
 (define (get-contents register)
@@ -62,6 +59,8 @@
                          message))))
     dispatch))
 
+(define (clear stack)
+  (stack 'initialize'))
 
 (define (pop stack)
   (stack 'pop))
@@ -96,15 +95,11 @@
                 ((instruction-execution-proc (mcar insts)))
                 (execute)))))
       (define (dispatch message)
-        (cond ((eq? message 'start)
-               (set-contents! pc the-instruction-sequence) 
-               (execute))
-              ((eq? message 'install-instruction-sequence) 
-               (lambda (seq) (set! the-instruction-sequence seq)))
+        (cond ((eq? message 'start) (set-contents! pc the-instruction-sequence) (execute))
+              ((eq? message 'install-instruction-sequence) (lambda (seq) (set! the-instruction-sequence seq)))
               ((eq? message 'allocate-register) allocate-register)
               ((eq? message 'get-register) lookup-register)
-              ((eq? message 'install-operations) 
-               (lambda (ops) (set! the-ops (append the-ops ops))))
+              ((eq? message 'install-operations) (lambda (ops) (set! the-ops (append the-ops ops))))
               ((eq? message 'stack) stack) 
               ((eq? message 'operations) the-ops) 
               (else (error "Unknown request -- MACHINE" message))))
@@ -360,7 +355,7 @@
    (test (op <) (reg n) (const 2))
    (branch (label immediate-answer))
    (save continue)
-fib-loop
+ fib-loop
    (assign continue (label afterfib-n-1))
    (save n)                           
    (assign n (op -) (reg n) (const 1))
