@@ -1,4 +1,6 @@
 #lang racket
+; also try (combinations s) !!!
+
 (define (power-set s)
   (if (null? s) '(())
       (let ([t (power-set (cdr s))])

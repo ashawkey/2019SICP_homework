@@ -62,9 +62,11 @@
   
   (define (mysum x)
       (lambda (. y)) ...) ; illegal
+  
   (define (mysum x)
       (define (f . y) ...) ; okay
       f)
+  
   (define (mysum x)
       (lambda ((y '())) ...))
   ```
@@ -113,13 +115,56 @@
 
   
 
-  
+### [Pairs and Lists](<https://docs.racket-lang.org/reference/pairs.html>)
 
-  
+```lisp
+(pair? v) ; list is pair, cons generates pair
+(list? v) ; list is either '() or a pair whose cdr is a list.
+(null? v) ; (equal? v '())
+null ; '()
 
-  
+(list* v ... tail) ; use tail instead of '()
 
-  
+;;; API
+(length lst)
+(list-ref lst pos)
+(list-tail lst pos) ; cdd..dr
+(list-set lst pos val)
+(index-of lst v) ; (index-of '(1 2 3 4) 3)  => 2
+(indexes-of lst v) ; return all
+(index-where lst proc)
+(indexes-where lst proc)
+(append lst ...)
+(append lst ... v) ; improper
+(reverse lst)
+(map proc lst ...)
+(andmap proc lst ...) ; remedy of (apply and (map proc lst ...)), which is errorneous since and is macro.
+; (andmap positive? '(1 2 3)) => #t
+(ormap proc lst ...)
+(for-each proc lst ...)
+(foldl proc init lst ...)
+(foldr proc init lst ...)
+(filter pred lst)
+(remove v lst) ; remove the first v in lst, use equal? to determinate equality.
+(remove* v lst) ; remove all v in lst
+(remq v lst) ; use eq?
+(sort lst less-than?)
+(member v lst) ; return the list start with v, use equal?
+(memq v lst) ; use eq?
+(assoc v lst)
+(assq v lst)
+
+(flatten lst)
+(remove-duplicates lst)
+(count proc lst ...) ; (count positive? '(1 2 -1))
+(shuffle lst)
+(combinations lst size) 
+(permutations lst)
+(cartesian-product lst1 lst2 ...)
+
+```
+
+
 
 ### Vector
 
@@ -189,10 +234,25 @@
 (string-set! "abc" 0 #\d)
 (substring "abc" 1 2) ; "b"
 (string-append str ...)
-(string->list str)
+(string->list str) ; list of chars
 (string=? "a" "b")
 (string-upcase str)
 (string-contains? str substr)
+(number->string 1)
+
+```
+
+
+
+### Procedures
+
+```lisp
+(procedure-arity proc)
+(identity v) ;=> v
+(const v); a function always return v, accepting any args
+(negate proc)
+(conjoin f1 f2 ...) ; a function ~ (and (f1 x) (f2 x) ...)
+(disjoin f1 f2 ...) ; (or ...)
 
 ```
 

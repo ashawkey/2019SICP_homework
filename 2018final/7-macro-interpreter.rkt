@@ -200,6 +200,7 @@
         (else
          (error "unknown expression type -- EVAL" exp))))
 
+;;; mod, not support macro params (x y) but call (y x), however this is accepted.
 (define (macro-apply procedure arguments)
   ; macro replace function
   (define (replace var val exp)
@@ -227,6 +228,7 @@
         (else
          (error "apply: unknown"))))
 
+;;; mod
 (define (make-macro-name f n)
   (string->symbol (string-append (symbol->string f) (number->string n))))
   
