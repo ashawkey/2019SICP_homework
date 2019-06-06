@@ -1,7 +1,6 @@
 #lang racket
 
 ; (make-vector 10 (make-vector 10 -1)) creates 10 reference of the same vector.
-
 (define (make-2d-vector x y init)
   (let ([v (make-vector x)])
     (let loop ([i 0])
@@ -11,6 +10,7 @@
 
 (define dp (make-2d-vector 105 105 -1))
 (define m (make-2d-vector 105 105 -1))
+
 (define (get a i j) (vector-ref (vector-ref a i) j))
 (define (set a i j v) (vector-set! (vector-ref a i) j v))
 

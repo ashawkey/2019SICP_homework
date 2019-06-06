@@ -29,3 +29,4 @@
   (unless (eq? x eof)
     (print-line (solve (sort (read-n x '()) <) '()))
     (main (read))))
+    
